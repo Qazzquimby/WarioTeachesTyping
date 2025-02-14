@@ -13,6 +13,7 @@
     "postinstall": "npx simple-git-hooks"
   },
   "dependencies": {
+    "98.css": "^0.1.20",
     "@vueuse/core": "^12.4.0",
     "oauth4webapi": "^3.1.4",
     "pinia": "^3.0.1",

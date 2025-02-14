@@ -2,15 +2,15 @@ import type { MicroGame, Question } from '~/types'
 
 export const createBasicTypingMicrogame = (): MicroGame => ({
   generateQuestion(difficulty: number): Question {
-    const targets = ['MUSHROOM', 'BANANA', 'PIZZA']
-    const target = targets[Math.min(difficulty, targets.length - 1)]
-    
+
+    // todo call random word api, length varying by difficulty number (0-2)
+
     return {
-      prompt: `TYPE "${target}" EXACTLY!`,
+      prompt: `type "${target}"`,
       hint: `Should have typed: ${target}`,
       acceptedAnswers: [target],
       rejectedAnswers: [],
-      validationDescription: `Exact match to ${target} in uppercase`,
+      validationDescription: `Exact match to ${target}`,
       validateLocally: (input: string) => input === target
     }
   }

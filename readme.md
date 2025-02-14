@@ -1,6 +1,5 @@
 Warioware game with only text interface
 Online. No server. Firebase db to hold questions and microgames.
-User provides openrouter api key.
 Doesn't need to be responsive to a mobile view since it relies on fast keyboard typing.
 
 # Style
@@ -15,6 +14,9 @@ Current time remaining for prompt
 Lives remaining
 Large textbox
 Round i / 10
+
+
+Please add <link rel="stylesheet" href="https://unpkg.com/98.css@0.1.4/build/98.css" />
 
 # Questions
 
@@ -33,3 +35,7 @@ A single specific question.
 - Hint provided on failure
 - Description of what constitutes a valid answer (for llm grading)
 - List of previously accepted answers
+
+# LLM use
+Can be temporarily mocked
+Should use netlify functions later to protect openrouter api key

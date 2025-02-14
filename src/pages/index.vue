@@ -21,7 +21,6 @@ onMounted(startNewRound)
 </script>
 
 <template>
-  <APIKeyModal />
   <div class="prompt my-8 text-4xl font-mono">
     {{ state.activeQuestion?.prompt }}
   </div>
