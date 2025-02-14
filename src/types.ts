@@ -1,12 +1,14 @@
-export interface MicroGame {
-  generateQuestion(difficulty: number): Question
+export class Question {
+  constructor(
+    public prompt: string,
+    public acceptedAnswers: string[],
+    public rejectedAnswers: string[],
+    public validationDescription: string, // For LLM grading
+    public hint: string,
+    public validateLocally: (input: string) => boolean
+  ) {}
 }
 
-export interface Question {
-  prompt: string
-  acceptedAnswers: string[]
-  rejectedAnswers: string[]
-  validationDescription: string // For LLM grading
-  hint: string
-  validateLocally(input: string): boolean
+export interface MicroGame {
+  generateQuestion(difficulty: number): Question
 }

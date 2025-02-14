@@ -1,17 +1,19 @@
-import type { MicroGame, Question } from '~/types'
+import {MicroGame, Question} from "~/types";
 
 export const createBasicTypingMicrogame = (): MicroGame => ({
   generateQuestion(difficulty: number): Question {
+    const target = 'START'; // Temporary hardcoded value for testing
 
-    // todo call random word api, length varying by difficulty number (0-2)
+    // const length = 5 + 2*difficulty
+    // https://random-word-api.vercel.app/api?words=1&length=9
 
-    return {
-      prompt: `type "${target}"`,
-      hint: `Should have typed: ${target}`,
-      acceptedAnswers: [target],
-      rejectedAnswers: [],
-      validationDescription: `Exact match to ${target}`,
-      validateLocally: (input: string) => input === target
-    }
+    return new Question(
+      `type "${target}"`,
+      [target],
+      [],
+      `Exact match to ${target}`,
+      `Should have typed: ${target}`,
+      (input: string) => input === target
+    )
   }
 })

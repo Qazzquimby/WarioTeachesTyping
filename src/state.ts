@@ -1,5 +1,6 @@
 import { reactive, ref } from 'vue'
 import type { Question } from './types'
+import { createBasicTypingMicrogame } from './microgames/typing'
 
 interface GameState {
   currentRound: number
@@ -19,8 +20,7 @@ export const useTimer = () => ({ timeLeft })
 
 
 export function startNewRound() {
-   // state.activeQuestion = createBasicTypingMicrogame().generateQuestion(0) // Start with difficulty 0
-   console.log("should make new game here")
-   state.inputText = ''
-   timeLeft.value = 10
- }
+  state.activeQuestion = createBasicTypingMicrogame().generateQuestion(0)
+  state.inputText = ''
+  timeLeft.value = 10
+}

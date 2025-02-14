@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { state, startNewRound } from '~/state'
-import { validateWithLLM } from '~/logic/validation'
 import { useTimer } from '~/state'
 
 const { timeLeft } = useTimer()
