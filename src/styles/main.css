@@ -9,3 +9,18 @@ body,
 html.dark {
   /*background: #121212;*/
 }
+
+.status-bar {
+  display: flex;
+  gap: 2rem;
+  padding: 0.5rem 1rem;
+}
+
+.status-bar-field {
+  padding: 2px 4px;
+  border: 2px solid;
+  border-color: #dfdfdf #808080 #808080 #dfdfdf;
+  background: #c0c0c0;
+  font-family: 'MS Sans Serif', sans-serif;
+  font-size: 12px;
+}

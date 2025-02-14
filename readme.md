@@ -16,7 +16,7 @@ Large textbox
 Round i / 10
 
 
-Please add <link rel="stylesheet" href="https://unpkg.com/98.css@0.1.4/build/98.css" />
+Please add <link rel="stylesheet" href="https://jdan.github.io/98.css/98.css" />
 
 # Questions
 
