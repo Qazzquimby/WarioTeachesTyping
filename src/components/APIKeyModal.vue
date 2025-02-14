@@ -39,6 +39,7 @@ async function handleCallback() {
       body: JSON.stringify({
         code,
         code_verifier: codeVerifier,
+        code_challenge_method: 'S256',
         grant_type: 'authorization_code'
       })
     })
