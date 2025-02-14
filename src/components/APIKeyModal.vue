@@ -2,6 +2,7 @@
 import { onMounted } from 'vue'
 import { AuthorizationServer, generateRandomCodeVerifier, calculatePKCECodeChallenge } from 'oauth4webapi'
 import { state } from '~/state'
+import { secureSet } from '~/composables/useSecureStorage'
 
 const server: AuthorizationServer = {
   issuer: 'https://openrouter.ai',
@@ -48,7 +49,8 @@ async function handleCallback() {
 
     const { api_key } = await response.json()
     state.userAPIKey = api_key
-    localStorage.setItem('openrouter-key', api_key)
+    await secureSet('openrouter-key', api_key)
+    console.log("setting key", state.userAPIKey.slice(5))
     window.history.replaceState({}, document.title, window.location.pathname)
   } catch (error) {
     errorMessage.value = 'Failed to authenticate. Please try again.'
@@ -58,6 +60,7 @@ async function handleCallback() {
 }
 
 onMounted(() => {
+  console.log("key", state.userAPIKey.slice(5))
   if (window.location.search.includes('code=')) {
     handleCallback()
   }

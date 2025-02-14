@@ -9,11 +9,17 @@ interface GameState {
   userAPIKey: string
 }
 
+import { secureGet } from '~/composables/useSecureStorage'
+
 export const state = reactive<GameState>({
   currentRound: 1,
   lives: 3,
   inputText: '',
-  userAPIKey: localStorage.getItem('openrouter-key') || ''
+  userAPIKey: ''
+})
+
+secureGet('openrouter-key').then((key) => {
+  if (key) state.userAPIKey = key
 })
 
 let timeLeft = ref(10)
