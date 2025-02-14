@@ -6,10 +6,16 @@ const { timeLeft } = useTimer()
 
 const handleKeydown = async (e: KeyboardEvent) => {
   if (e.key === 'Enter' && !e.shiftKey && state.inputText && state.activeQuestion) {
-    const validLocal = state.activeQuestion.validateLocally(state.inputText)
-    const validLLM = validLocal || await validateWithLLM(state.activeQuestion, state.inputText)
+    e.preventDefault()
 
-    if (validLocal || validLLM) {
+    const validLocal = state.activeQuestion.validateLocally(state.inputText)
+    // const validLLM = validLocal || await validateWithLLM(state.activeQuestion, state.inputText)
+    if (validLocal) {
+      console.log("win")
+      state.currentRound++
+      startNewRound()
+    } else {
+      console.log("lose")
       state.currentRound++
       startNewRound()
     }
@@ -27,10 +33,10 @@ onMounted(startNewRound)
       <div class="title-bar-text">Type This!</div>
     </div>
     <div class="window-body">
-      <div class="prompt mb-4 text-2xl font-mono">
+      <div class="mb-4 text-2xl">
         {{ state.activeQuestion?.prompt }}
       </div>
-      <textarea
+      <textarea class="text-xl w-full p-2"
         v-model="state.inputText"
         rows="3"
         autofocus
