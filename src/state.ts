@@ -44,6 +44,10 @@ export function resetGame() {
   timeLeft.value = 10
 }
 
+export function getSpeedMultiplier() {
+  return Math.pow(0.75, state.speed)
+}
+
 export async function startNewRound() {
   const gameIndex = state.currentRound % microgames.length
   const microgame = microgames[gameIndex]()
@@ -62,8 +66,8 @@ export async function startNewRound() {
   state.activeQuestion = await microgame.generateQuestion(state.difficulty)
   state.inputText = ''
 
-  // Apply speed multiplier to time limit
+  // Set actual timer here instead of using variable
   const baseTime = state.activeQuestion.timeLimit
-  const speedMultiplier = Math.pow(0.75, state.speed)
-  timeLeft.value = Math.max(5, Math.floor(baseTime * speedMultiplier))
+  const speedMultiplier = getSpeedMultiplier()
+  timeLeft.value = Math.ceil(baseTime * speedMultiplier)
 }

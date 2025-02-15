@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {state, startNewRound, resetGame as resetGameState} from '~/state'
+import {state, startNewRound, resetGame as resetGameState, getSpeedMultiplier} from '~/state'
 import {useTimer} from '~/state'
 import { onMounted, onUnmounted, ref } from 'vue'
 
@@ -30,11 +30,9 @@ function handleLoss() {
 }
 
 // Timer logic
-function startTimer(initialTime?: number) {
+function startTimer() {
   if (timer.value) clearInterval(timer.value)
-  const timeLimit = state.activeQuestion?.timeLimit || 10
-  timeLeft.value = initialTime ?? timeLimit
-
+  // Use existing timeLeft value set by state.ts
   timer.value = window.setInterval(() => {
     if (timeLeft.value > 0) {
       timeLeft.value--
@@ -48,16 +46,18 @@ function startTimer(initialTime?: number) {
 async function submitAnswer() {
   if (!state.activeQuestion) return
 
+  // Prevent concurrent submissions
+  if (showFeedback.value || showSpeedUp.value) return
+
   clearTimeout(feedbackTimeout.value)
   const submission = state.inputText.trim()
   const correct = state.activeQuestion.acceptedAnswers[0]
 
-  const remainingTime = timeLeft.value
   if (timer.value) clearInterval(timer.value)
 
   if (state.activeQuestion.validateLocally(submission)) {
+    // Handle correct answer
     isCorrect.value = true
-    console.log("win")
     state.currentRound++
     state.score = state.currentRound - 1
 
@@ -65,38 +65,38 @@ async function submitAnswer() {
     showFeedback.value = true
     feedbackTimeout.value = window.setTimeout(() => {
       showFeedback.value = false
-      startTimer(remainingTime)
-      startRound()
+      startRound() // This will trigger speed popups before next timer
     }, 1000)
   } else {
+    // Handle incorrect answer
     isCorrect.value = false
     feedbackMessage.value = `You entered: ${submission}\nCorrect answer: ${correct}`
-
     showFeedback.value = true
     feedbackTimeout.value = window.setTimeout(() => {
       showFeedback.value = false
-      startTimer(remainingTime)
       handleLoss()
     }, 2000)
   }
 }
 
 const timeLeftPercent = computed(() => {
-  const timeLimit = state.activeQuestion?.timeLimit || 10
-  return 100 * (timeLeft.value / timeLimit)
+  const timeLimit = (state.activeQuestion?.timeLimit || 10) * getSpeedMultiplier()
+  return Math.min(100, 100 * (timeLeft.value / timeLimit))
 })
 
 // Update round starter
 async function startRound() {
   const prevSpeed = state.speed
   await startNewRound()
-  startTimer()
-  
+
   if (state.speed > prevSpeed) {
     showSpeedUp.value = true
     speedTimeout.value = window.setTimeout(() => {
       showSpeedUp.value = false
+      startTimer() // Wait to start timer until after popup
     }, 1500)
+  } else {
+    startTimer() // Start immediately if no speed change
   }
 }
 
@@ -107,6 +107,11 @@ onUnmounted(() => {
 })
 
 async function handleKeydown(e: KeyboardEvent) {
+  if (showFeedback.value || showSpeedUp.value) {
+    e.preventDefault()
+    return
+  }
+
   if (e.key === 'Enter' && !e.shiftKey) {
     e.preventDefault()
     await submitAnswer()
@@ -188,10 +193,7 @@ async function resetGame() {
       <div class="title-bar-text" style="font-size: 16px">🚀 Speed Level {{ state.speed }}</div>
     </div>
     <div class="window-body text-lg text-center">
-      Timer speed increased!
-      <div class="text-sm mt-2">
-        (Now ×{{ Math.pow(0.75, state.speed).toFixed(2) }} speed)
-      </div>
+      Speed Up!
     </div>
   </div>
 </template>
