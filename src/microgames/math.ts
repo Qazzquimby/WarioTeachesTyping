@@ -30,7 +30,7 @@ function mathMicrogame(difficulty: number): Question {
     [answer.toString()],
     [],
     `Solution: ${prompt} = ${answer}`,
-    (input: string) => {
+    async (input: string) => {
       return parseInt(input.trim(), 10) === answer
     },
     timeLimit

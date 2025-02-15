@@ -16,7 +16,7 @@ export const createLetterCountGame = (): MicroGame => ({
       [answer],
       [],
       `String length is ${answer}`,
-      (input) => input.trim() === answer,
+      async (input) => input.trim() === answer,
       12
     )
   }

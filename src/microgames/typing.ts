@@ -45,7 +45,7 @@ export const typeForwardsWordBackwards = (): MicroGame => ({
       [reversed],
       [],
       `Original word was: ${original}`,
-      (input: string) => input.trim() === reversed,
+      async (input: string) => input.trim() === reversed,
       14
     )
   }

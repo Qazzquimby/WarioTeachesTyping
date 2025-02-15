@@ -51,13 +51,13 @@ async function submitAnswer() {
 
   clearTimeout(feedbackTimeout.value)
   const submission = state.inputText.trim()
-  const correct = state.activeQuestion.acceptedAnswers[0]
-
+  const correctAnswer = state.activeQuestion.acceptedAnswers[0]
   if (timer.value) clearInterval(timer.value)
 
-  if (state.activeQuestion.validateLocally(submission)) {
+  isCorrect.value = await state.activeQuestion.validateLocally(submission)
+  if (isCorrect.value) {
+    console.log("win")
     // Handle correct answer
-    isCorrect.value = true
     state.currentRound++
     state.score = state.currentRound - 1
 
@@ -69,8 +69,7 @@ async function submitAnswer() {
     }, 1000)
   } else {
     // Handle incorrect answer
-    isCorrect.value = false
-    feedbackMessage.value = `You entered: ${submission}\nCorrect answer: ${correct}`
+    feedbackMessage.value = `You entered: ${submission}\nCorrect answer: ${correctAnswer}`
     showFeedback.value = true
     feedbackTimeout.value = window.setTimeout(() => {
       showFeedback.value = false
