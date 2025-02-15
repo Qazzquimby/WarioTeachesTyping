@@ -18,10 +18,10 @@ export const createBasicTypingMicrogame = (): MicroGame => ({
     const target = await getRandomWord(length)
 
     return new Question(
-      `type "${target}"`,
+      `Type "${target}"`,
       [target],
       [],
-      `Exact match to ${target}`,
+      `Must match "${target}" exactly`,
       (input: string) => input.trim() === target,
       10
     )
@@ -31,14 +31,21 @@ export const createBasicTypingMicrogame = (): MicroGame => ({
 export const createReverseTypingMicrogame = (): MicroGame => ({
   async generateQuestion(difficulty: number) {
     const length = 5 + 2 * difficulty
-    const original = await getRandomWord(length)
-    const reversed = original.split('').reverse().join('')
+    let original = await getRandomWord(length)
+    let reversed = original.split('').reverse().join('')
+
+    const flip = Boolean(Math.round(Math.random()))
+    if(flip) {
+      let tempReversed = reversed;
+      reversed = original;
+      original = tempReversed
+    }
 
     return new Question(
-      `type "${original}" backwards`,
-      [original],
+      `Type "${original}" backwards`,
+      [reversed],
       [],
-      `Must be original word spelled backwards`,
+      `Original word was: ${original}`,
       (input: string) => input.trim() === reversed,
       12
     )

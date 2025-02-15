@@ -29,9 +29,28 @@ function startTimer() {
     if (timeLeft.value > 0) {
       timeLeft.value--
     } else {
-      handleLoss()
+      clearInterval(timer.value)
+      submitAnswer() // Submit when time runs out
     }
   }, 1000)
+}
+
+async function submitAnswer() {
+  if (!state.activeQuestion) return
+  
+  const submission = state.inputText.trim()
+  const correct = state.activeQuestion.acceptedAnswers[0]
+  
+  const valid = state.activeQuestion.validateLocally(submission)
+  if (valid) {
+    console.log("win")
+    state.currentRound++
+    await startRound()
+  } else {
+    console.log("Submitted:", submission)
+    console.log("Correct:", correct)
+    handleLoss()
+  }
 }
 
 const timeLeftPercent = computed(() => {
@@ -52,20 +71,9 @@ onUnmounted(() => {
 })
 
 async function handleKeydown(e: KeyboardEvent) {
-  if (e.key === 'Enter' && !e.shiftKey && state.inputText && state.activeQuestion) {
+  if (e.key === 'Enter' && !e.shiftKey) {
     e.preventDefault()
-
-    const validLocal = state.activeQuestion.validateLocally(
-      state.inputText.trim().toUpperCase()
-    )
-    // const validLLM = validLocal || await validateWithLLM(state.activeQuestion, state.inputText)
-    if (validLocal) {
-      console.log("win")
-      state.currentRound++
-      startRound()
-    } else {
-      handleLoss()
-    }
+    await submitAnswer()
   } else if (e.key === 'Escape') {
     startRound()
   }
