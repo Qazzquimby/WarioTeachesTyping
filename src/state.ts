@@ -16,6 +16,8 @@ interface GameState {
   activeQuestion?: Question
   gameOver: boolean
   score: number
+  difficulty: number
+  speed: number
 }
 
 export const state = reactive<GameState>({
@@ -23,7 +25,9 @@ export const state = reactive<GameState>({
   lives: 3,
   inputText: '',
   gameOver: false,
-  score: 0
+  score: 0,
+  difficulty: 0,
+  speed: 0
 })
 
 let timeLeft = ref(10)
@@ -44,9 +48,22 @@ export async function startNewRound() {
   const gameIndex = state.currentRound % microgames.length
   const microgame = microgames[gameIndex]()
 
-  const difficulty = Math.min(Math.floor((state.currentRound - 1) / 3), 2)
+  // Update progress system
+  const prevRounds = state.currentRound - 1
+  if (prevRounds % 2 === 0) { // Every 2 rounds
+    if (state.difficulty >= 2) {
+      state.difficulty = 0
+      state.speed++
+    } else {
+      state.difficulty++
+    }
+  }
 
-  state.activeQuestion = await microgame.generateQuestion(difficulty)
+  state.activeQuestion = await microgame.generateQuestion(state.difficulty)
   state.inputText = ''
-  timeLeft.value = state.activeQuestion.timeLimit
+
+  // Apply speed multiplier to time limit
+  const baseTime = state.activeQuestion.timeLimit
+  const speedMultiplier = Math.pow(0.75, state.speed)
+  timeLeft.value = Math.max(5, Math.floor(baseTime * speedMultiplier))
 }

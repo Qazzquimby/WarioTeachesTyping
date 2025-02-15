@@ -11,6 +11,9 @@ const feedbackMessage = ref('')
 const feedbackTimeout = ref<number>()
 const isCorrect = ref(false)
 
+const showSpeedUp = ref(false)
+const speedTimeout = ref<number>()
+
 // Unified loss handler
 function handleLoss() {
   console.log("lose")
@@ -85,8 +88,16 @@ const timeLeftPercent = computed(() => {
 
 // Update round starter
 async function startRound() {
+  const prevSpeed = state.speed
   await startNewRound()
   startTimer()
+  
+  if (state.speed > prevSpeed) {
+    showSpeedUp.value = true
+    speedTimeout.value = window.setTimeout(() => {
+      showSpeedUp.value = false
+    }, 1500)
+  }
 }
 
 // Lifecycle hooks
@@ -168,6 +179,18 @@ async function resetGame() {
       {{ feedbackMessage }}
       <div class="text-center mt-4 text-base">
         Closing in 2 seconds...
+      </div>
+    </div>
+  </div>
+
+  <div v-if="showSpeedUp" class="speedup-modal window">
+    <div class="title-bar bg-blue-500">
+      <div class="title-bar-text" style="font-size: 16px">🚀 Speed Level {{ state.speed }}</div>
+    </div>
+    <div class="window-body text-lg text-center">
+      Timer speed increased!
+      <div class="text-sm mt-2">
+        (Now ×{{ Math.pow(0.75, state.speed).toFixed(2) }} speed)
       </div>
     </div>
   </div>
