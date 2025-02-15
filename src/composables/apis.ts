@@ -1,8 +1,12 @@
-export async function isWord(word: str) {
-  const url = `https://api.dictionaryapi.dev/api/v2/entries/en/${word.lower().trim()}`
-  const result = fetch(url)
-  const hasNoDefinitions = "No Definitions" in result
-  return !hasNoDefinitions
+export async function getIsWord(word: string) {
+  try {
+    const response = await fetch(
+      `https://api.dictionaryapi.dev/api/v2/entries/en/${word.toLowerCase()}`
+    )
+    return response.status === 200
+  } catch (e) {
+    return false
+  }
 }
 
 export async function getRandomWord(length: number): Promise<string> {

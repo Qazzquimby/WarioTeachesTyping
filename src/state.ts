@@ -7,13 +7,15 @@ import {
 } from './microgames/typing'
 import {createMathMicrogame} from './microgames/math'
 import {createLetterCountGame} from './microgames/count'
+import {createTypoFixMicrogame} from './microgames/typo'
 
 const microgames = [
   typeWordMicrogame,
   typeForwardsWordBackwards,
   typeBackwardsWordForwards,
   createMathMicrogame,
-  createLetterCountGame
+  createLetterCountGame,
+  createTypoFixMicrogame
 ]
 
 interface GameState {
