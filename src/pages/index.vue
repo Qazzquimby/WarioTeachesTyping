@@ -54,7 +54,7 @@ async function submitAnswer() {
   const correctAnswer = state.activeQuestion.acceptedAnswers[0]
   if (timer.value) clearInterval(timer.value)
 
-  isCorrect.value = await state.activeQuestion.validateLocally(submission)
+  isCorrect.value = await state.activeQuestion.validate(submission)
   if (isCorrect.value) {
     console.log("win")
     // Handle correct answer
