@@ -24,8 +24,13 @@ export const createTypoFixMicrogame = (): MicroGame => ({
   async generateQuestion(difficulty: number) {
     const wordLength = 5 + 2 * difficulty;
 
-    const word = await getRandomWord(wordLength);
-    const typoVersion = addTypo(word);
+    let word = '';
+    while (true) {
+      word = (await getRandomWord(wordLength));
+      if (await getIsWord(word)) break;
+    }
+
+    const typoVersion = addTypo(word.toLowerCase());
 
     function validate(submission: str) {
       const isWord = getIsWord(submission)
@@ -36,7 +41,7 @@ export const createTypoFixMicrogame = (): MicroGame => ({
 
     return new Question(
       `Fix the typo in "${typoVersion}"`,
-      [word],
+      [word], // Only accept original valid word
       [],
       `English word 1 character away from ${word}`,
       validate,

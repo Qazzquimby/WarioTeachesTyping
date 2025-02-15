@@ -10,11 +10,11 @@ import {createLetterCountGame} from './microgames/count'
 import {createTypoFixMicrogame} from './microgames/typo'
 
 const microgames = [
-  typeWordMicrogame,
-  typeForwardsWordBackwards,
-  typeBackwardsWordForwards,
-  createMathMicrogame,
-  createLetterCountGame,
+  // typeWordMicrogame,
+  // typeForwardsWordBackwards,
+  // typeBackwardsWordForwards,
+  // createMathMicrogame,
+  // createLetterCountGame,
   createTypoFixMicrogame
 ]
 
