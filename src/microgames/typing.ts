@@ -12,7 +12,7 @@ async function getRandomWord(length: number): Promise<string> {
   }
 }
 
-export const createBasicTypingMicrogame = (): MicroGame => ({
+export const typeWordMicrogame = (): MicroGame => ({
   async generateQuestion(difficulty: number) {
     const length = 5 + 2 * difficulty
     const target = await getRandomWord(length)
@@ -28,18 +28,28 @@ export const createBasicTypingMicrogame = (): MicroGame => ({
   }
 })
 
-export const createReverseTypingMicrogame = (): MicroGame => ({
+export const typeBackwardsWordForwards = (): MicroGame => ({
   async generateQuestion(difficulty: number) {
     const length = 5 + 2 * difficulty
     let original = await getRandomWord(length)
     let reversed = original.split('').reverse().join('')
 
-    const flip = Boolean(Math.round(Math.random()))
-    if(flip) {
-      let tempReversed = reversed;
-      reversed = original;
-      original = tempReversed
-    }
+    return new Question(
+      `Type "${reversed}" backwards`,
+      [original],
+      [],
+      `Original word was: ${reversed}`,
+      (input: string) => input.trim() === original,
+      12
+    )
+  }
+})
+
+export const typeForwardsWordBackwards = (): MicroGame => ({
+  async generateQuestion(difficulty: number) {
+    const length = 5 + 2 * difficulty
+    let original = await getRandomWord(length)
+    let reversed = original.split('').reverse().join('')
 
     return new Question(
       `Type "${original}" backwards`,
@@ -47,7 +57,7 @@ export const createReverseTypingMicrogame = (): MicroGame => ({
       [],
       `Original word was: ${original}`,
       (input: string) => input.trim() === reversed,
-      12
+      14
     )
   }
 })
