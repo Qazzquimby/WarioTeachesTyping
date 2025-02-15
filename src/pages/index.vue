@@ -40,8 +40,8 @@ const timeLeftPercent = computed(() => {
 })
 
 // Update round starter
-function startRound() {
-  startNewRound()
+async function startRound() {
+  await startNewRound()
   startTimer()
 }
 
@@ -55,7 +55,9 @@ async function handleKeydown(e: KeyboardEvent) {
   if (e.key === 'Enter' && !e.shiftKey && state.inputText && state.activeQuestion) {
     e.preventDefault()
 
-    const validLocal = state.activeQuestion.validateLocally(state.inputText)
+    const validLocal = state.activeQuestion.validateLocally(
+      state.inputText.trim().toUpperCase()
+    )
     // const validLLM = validLocal || await validateWithLLM(state.activeQuestion, state.inputText)
     if (validLocal) {
       console.log("win")

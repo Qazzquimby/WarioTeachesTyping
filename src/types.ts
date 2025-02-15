@@ -4,12 +4,11 @@ export class Question {
     public acceptedAnswers: string[],
     public rejectedAnswers: string[],
     public validationDescription: string, // For LLM grading
-    public hint: string,
     public validateLocally: (input: string) => boolean,
     public timeLimit: number = 10
   ) {}
 }
 
 export interface MicroGame {
-  generateQuestion(difficulty: number): Question
+  generateQuestion(difficulty: number): Promise<Question>
 }

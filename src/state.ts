@@ -1,6 +1,9 @@
 import { reactive, ref } from 'vue'
 import type { Question } from './types'
-import { createBasicTypingMicrogame } from './microgames/typing'
+import { createBasicTypingMicrogame, createReverseTypingMicrogame } from './microgames/typing'
+
+// Add game type rotation
+const microgames = [createBasicTypingMicrogame, createReverseTypingMicrogame]
 
 interface GameState {
   currentRound: number
@@ -19,8 +22,11 @@ let timeLeft = ref(10)
 export const useTimer = () => ({ timeLeft })
 
 
-export function startNewRound() {
-  state.activeQuestion = createBasicTypingMicrogame().generateQuestion(0)
+export async function startNewRound() {
+  const gameIndex = state.currentRound % microgames.length
+  const microgame = microgames[gameIndex]()
+  
+  state.activeQuestion = await microgame.generateQuestion(0)
   state.inputText = ''
-  timeLeft.value = 10
+  timeLeft.value = state.activeQuestion.timeLimit
 }
