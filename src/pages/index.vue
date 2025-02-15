@@ -11,7 +11,7 @@ function handleLoss() {
   console.log("lose")
   state.lives = Math.max(0, state.lives - 1)
   state.currentRound++
-  
+
   if (state.lives > 0) {
     startNewRound()
   } else {
@@ -26,7 +26,7 @@ function startTimer() {
   if (timer.value) clearInterval(timer.value)
   const timeLimit = state.activeQuestion?.timeLimit || 10
   timeLeft.value = timeLimit
-  
+
   timer.value = window.setInterval(() => {
     if (timeLeft.value > 0) {
       timeLeft.value--
@@ -39,10 +39,10 @@ function startTimer() {
 
 async function submitAnswer() {
   if (!state.activeQuestion) return
-  
+
   const submission = state.inputText.trim()
   const correct = state.activeQuestion.acceptedAnswers[0]
-  
+
   const valid = state.activeQuestion.validateLocally(submission)
   if (valid) {
     console.log("win")
@@ -109,8 +109,8 @@ async function resetGame() {
 
       <div class="status-bar-field">Time Left: {{ timeLeft }}
         <div class="progress-indicator segmented">
-          <span 
-            class="progress-indicator-bar" 
+          <span
+            class="progress-indicator-bar"
             :style="{ width: `${timeLeftPercent}%` }"
             :class="{ warning: timeLeftPercent < 30, danger: timeLeftPercent < 10 }"
           />
@@ -127,7 +127,7 @@ async function resetGame() {
     <div class="window-body text-center">
       <h2 class="text-xl mb-4">Game Over!</h2>
       <p class="mb-4">Final Score: {{ state.score }}</p>
-      <button 
+      <button
         class="px-4 py-2 border hover:bg-gray-100 active:bg-gray-200"
         @click="resetGame"
       >
