@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {state, startNewRound} from '~/state'
+import {state, startNewRound, resetGame as resetGameState} from '~/state'
 import {useTimer} from '~/state'
 import { onMounted, onUnmounted, ref } from 'vue'
 
@@ -11,11 +11,13 @@ function handleLoss() {
   console.log("lose")
   state.lives = Math.max(0, state.lives - 1)
   state.currentRound++
+  
   if (state.lives > 0) {
     startNewRound()
   } else {
-    console.log("GAME OVER")
-    // Handle game over state
+    state.gameOver = true
+    state.score = state.currentRound - 1
+    if (timer.value) clearInterval(timer.value)
   }
 }
 
@@ -45,6 +47,7 @@ async function submitAnswer() {
   if (valid) {
     console.log("win")
     state.currentRound++
+    state.score = state.currentRound - 1
     await startRound()
   } else {
     console.log("Submitted:", submission)
@@ -80,10 +83,16 @@ async function handleKeydown(e: KeyboardEvent) {
 }
 
 onMounted(startRound)
+
+async function resetGame() {
+  if (timer.value) clearInterval(timer.value)
+  resetGameState()
+  await startRound()
+}
 </script>
 
 <template>
-  <div class="window" style="width: 600px">
+  <div v-if="!state.gameOver" class="window" style="width: 600px">
     <div class="title-bar">
       <div class="title-bar-text">Type This!</div>
     </div>
@@ -109,7 +118,21 @@ onMounted(startRound)
       </div>
 
     </div>
+  </div>
 
-
+  <div v-else class="window" style="width: 400px">
+    <div class="title-bar">
+      <div class="title-bar-text">Game Over</div>
+    </div>
+    <div class="window-body text-center">
+      <h2 class="text-xl mb-4">Game Over!</h2>
+      <p class="mb-4">Final Score: {{ state.score }}</p>
+      <button 
+        class="px-4 py-2 border hover:bg-gray-100 active:bg-gray-200"
+        @click="resetGame"
+      >
+        Play Again
+      </button>
+    </div>
   </div>
 </template>

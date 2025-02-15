@@ -10,17 +10,31 @@ interface GameState {
   lives: number
   inputText: string
   activeQuestion?: Question
+  gameOver: boolean
+  score: number
 }
 
 export const state = reactive<GameState>({
   currentRound: 1,
   lives: 3,
   inputText: '',
+  gameOver: false,
+  score: 0
 })
 
 let timeLeft = ref(10)
 export const useTimer = () => ({ timeLeft })
 
+
+export function resetGame() {
+  state.currentRound = 1
+  state.lives = 3
+  state.inputText = ''
+  state.gameOver = false
+  state.score = state.currentRound - 1
+  state.activeQuestion = undefined
+  timeLeft.value = 10
+}
 
 export async function startNewRound() {
   const gameIndex = state.currentRound % microgames.length
