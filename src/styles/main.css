@@ -24,3 +24,28 @@ html.dark {
   font-family: 'MS Sans Serif', sans-serif;
   font-size: 12px;
 }
+
+.feedback-correct {
+  background-color: #d0f0d0 !important;
+  transition: background-color 0.5s ease;
+}
+
+.feedback-incorrect {
+  background-color: #ffe0e0 !important;
+  transition: background-color 0.5s ease;
+}
+
+.error-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  width: 400px;
+  font-size: 16px;
+}
+
+.error-modal .window-body {
+  padding: 1.5rem;
+  line-height: 1.5;
+}

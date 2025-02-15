@@ -6,6 +6,11 @@ import { onMounted, onUnmounted, ref } from 'vue'
 const timer = ref<number>()
 const {timeLeft} = useTimer()
 
+const showFeedback = ref(false)
+const feedbackMessage = ref('')
+const feedbackTimeout = ref<number>()
+const isCorrect = ref(false)
+
 // Unified loss handler
 function handleLoss() {
   console.log("lose")
@@ -22,17 +27,17 @@ function handleLoss() {
 }
 
 // Timer logic
-function startTimer() {
+function startTimer(initialTime?: number) {
   if (timer.value) clearInterval(timer.value)
   const timeLimit = state.activeQuestion?.timeLimit || 10
-  timeLeft.value = timeLimit
+  timeLeft.value = initialTime ?? timeLimit
 
   timer.value = window.setInterval(() => {
     if (timeLeft.value > 0) {
       timeLeft.value--
     } else {
       clearInterval(timer.value)
-      submitAnswer() // Submit when time runs out
+      submitAnswer()
     }
   }, 1000)
 }
@@ -40,19 +45,36 @@ function startTimer() {
 async function submitAnswer() {
   if (!state.activeQuestion) return
 
+  clearTimeout(feedbackTimeout.value)
   const submission = state.inputText.trim()
   const correct = state.activeQuestion.acceptedAnswers[0]
 
-  const valid = state.activeQuestion.validateLocally(submission)
-  if (valid) {
+  const remainingTime = timeLeft.value
+  if (timer.value) clearInterval(timer.value)
+
+  if (state.activeQuestion.validateLocally(submission)) {
+    isCorrect.value = true
     console.log("win")
     state.currentRound++
     state.score = state.currentRound - 1
-    await startRound()
+
+    feedbackMessage.value = `Nice.`
+    showFeedback.value = true
+    feedbackTimeout.value = window.setTimeout(() => {
+      showFeedback.value = false
+      startTimer(remainingTime)
+      startRound()
+    }, 1000)
   } else {
-    console.log("Submitted:", submission)
-    console.log("Correct:", correct)
-    handleLoss()
+    isCorrect.value = false
+    feedbackMessage.value = `You entered: ${submission}\nCorrect answer: ${correct}`
+
+    showFeedback.value = true
+    feedbackTimeout.value = window.setTimeout(() => {
+      showFeedback.value = false
+      startTimer(remainingTime)
+      handleLoss()
+    }, 2000)
   }
 }
 
@@ -92,7 +114,9 @@ async function resetGame() {
 </script>
 
 <template>
-  <div v-if="!state.gameOver" class="window" style="width: 600px">
+  <div v-if="!state.gameOver" class="window" style="width: 600px"
+       :class="{ 'feedback-correct': isCorrect && showFeedback,
+                 'feedback-incorrect': !isCorrect && showFeedback }">
     <div class="title-bar">
       <div class="title-bar-text">Type This!</div>
     </div>
@@ -133,6 +157,18 @@ async function resetGame() {
       >
         Play Again
       </button>
+    </div>
+  </div>
+
+  <div v-if="showFeedback && !isCorrect" class="error-modal window">
+    <div class="title-bar bg-red-500">
+      <div class="title-bar-text" style="font-size: 16px">⚠️ Incorrect!</div>
+    </div>
+    <div class="window-body whitespace-pre-line text-lg">
+      {{ feedbackMessage }}
+      <div class="text-center mt-4 text-base">
+        Closing in 2 seconds...
+      </div>
     </div>
   </div>
 </template>
