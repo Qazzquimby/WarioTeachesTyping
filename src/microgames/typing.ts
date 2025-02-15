@@ -13,7 +13,8 @@ export const createBasicTypingMicrogame = (): MicroGame => ({
       [],
       `Exact match to ${target}`,
       `Should have typed: ${target}`,
-      (input: string) => input === target
+      (input: string) => input === target,
+      10 // Time limit in seconds
     )
   }
 })

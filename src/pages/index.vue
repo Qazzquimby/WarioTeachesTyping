@@ -1,14 +1,57 @@
 <script setup lang="ts">
 import {state, startNewRound} from '~/state'
 import {useTimer} from '~/state'
+import { onMounted, onUnmounted, ref } from 'vue'
 
+const timer = ref<number>()
 const {timeLeft} = useTimer()
-const timeLeftPercent = computed(() => {
-    return 100 * (timeLeft / 10)
-  }
-)
 
-const handleKeydown = async (e: KeyboardEvent) => {
+// Unified loss handler
+function handleLoss() {
+  console.log("lose")
+  state.lives = Math.max(0, state.lives - 1)
+  state.currentRound++
+  if (state.lives > 0) {
+    startNewRound()
+  } else {
+    console.log("GAME OVER")
+    // Handle game over state
+  }
+}
+
+// Timer logic
+function startTimer() {
+  if (timer.value) clearInterval(timer.value)
+  const timeLimit = state.activeQuestion?.timeLimit || 10
+  timeLeft.value = timeLimit
+  
+  timer.value = window.setInterval(() => {
+    if (timeLeft.value > 0) {
+      timeLeft.value--
+    } else {
+      handleLoss()
+    }
+  }, 1000)
+}
+
+const timeLeftPercent = computed(() => {
+  const timeLimit = state.activeQuestion?.timeLimit || 10
+  return 100 * (timeLeft.value / timeLimit)
+})
+
+// Update round starter
+function startRound() {
+  startNewRound()
+  startTimer()
+}
+
+// Lifecycle hooks
+onMounted(startRound)
+onUnmounted(() => {
+  if (timer.value) clearInterval(timer.value)
+})
+
+async function handleKeydown(e: KeyboardEvent) {
   if (e.key === 'Enter' && !e.shiftKey && state.inputText && state.activeQuestion) {
     e.preventDefault()
 
@@ -17,24 +60,16 @@ const handleKeydown = async (e: KeyboardEvent) => {
     if (validLocal) {
       console.log("win")
       state.currentRound++
-      startNewRound()
+      startRound()
     } else {
-      console.log("lose")
-      state.lives = Math.max(0, state.lives - 1)
-      state.currentRound++
-      if (state.lives > 0) {
-        startNewRound()
-      } else {
-        console.log("GAME OVER")
-        // todo
-      }
+      handleLoss()
     }
   } else if (e.key === 'Escape') {
-    startNewRound()
+    startRound()
   }
 }
 
-onMounted(startNewRound)
+onMounted(startRound)
 </script>
 
 <template>
@@ -55,7 +90,11 @@ onMounted(startNewRound)
 
       <div class="status-bar-field">Time Left: {{ timeLeft }}
         <div class="progress-indicator segmented">
-          <span class="progress-indicator-bar" :style="{ width: timeLeftPercent + '%' }"/>
+          <span 
+            class="progress-indicator-bar" 
+            :style="{ width: `${timeLeftPercent}%` }"
+            :class="{ warning: timeLeftPercent < 30, danger: timeLeftPercent < 10 }"
+          />
         </div>
       </div>
 

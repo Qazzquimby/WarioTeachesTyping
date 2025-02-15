@@ -5,7 +5,8 @@ export class Question {
     public rejectedAnswers: string[],
     public validationDescription: string, // For LLM grading
     public hint: string,
-    public validateLocally: (input: string) => boolean
+    public validateLocally: (input: string) => boolean,
+    public timeLimit: number = 10
   ) {}
 }
 
