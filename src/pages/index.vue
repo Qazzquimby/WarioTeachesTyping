@@ -55,7 +55,7 @@ async function submitAnswer() {
 
   if (timer.value) clearInterval(timer.value)
 
-  if (state.activeQuestion.validateLocally(submission)) {
+  if (state.activeQuestion.validateLocally(submission.replace(/[^0-9]/g, ''))) {
     // Handle correct answer
     isCorrect.value = true
     state.currentRound++

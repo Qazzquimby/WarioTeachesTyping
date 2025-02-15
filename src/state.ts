@@ -1,13 +1,20 @@
-import { reactive, ref } from 'vue'
-import type { Question } from './types'
+import {reactive, ref} from 'vue'
+import type {Question} from './types'
 import {
   typeWordMicrogame,
   typeBackwardsWordForwards,
   typeForwardsWordBackwards
 } from './microgames/typing'
-import { createMathMicrogame } from './microgames/math'
+import {createMathMicrogame} from './microgames/math'
+import {createLetterCountGame} from './microgames/count'
 
-const microgames = [typeWordMicrogame, typeForwardsWordBackwards, typeBackwardsWordForwards, createMathMicrogame]
+const microgames = [
+  typeWordMicrogame,
+  typeForwardsWordBackwards,
+  typeBackwardsWordForwards,
+  createMathMicrogame,
+  createLetterCountGame
+]
 
 interface GameState {
   currentRound: number
@@ -31,7 +38,7 @@ export const state = reactive<GameState>({
 })
 
 let timeLeft = ref(10)
-export const useTimer = () => ({ timeLeft })
+export const useTimer = () => ({timeLeft})
 
 
 export function resetGame() {
