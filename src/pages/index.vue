@@ -38,7 +38,13 @@ function startTimer() {
       timeLeft.value--
     } else {
       clearInterval(timer.value)
-      submitAnswer()
+      if (state.inputText) {
+        console.log("Submitting due to timeout")
+        submitAnswer()
+      } else {
+        handleLoss()
+      }
+
     }
   }, 1000)
 }
