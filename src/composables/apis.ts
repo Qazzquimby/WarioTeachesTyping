@@ -21,9 +21,9 @@ export async function getRandomWord(length: number): Promise<string> {
   }
 }
 
-export async function callProtectedApi(query: string): Promise<{data: string}> {
+export async function promptLLM(query: string): Promise<{data: string}> {
   try {
-    const response = await fetch('/.netlify/functions/protected-api', {
+    const response = await fetch('/.netlify/functions/promptLLM', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -31,11 +31,17 @@ export async function callProtectedApi(query: string): Promise<{data: string}> {
       },
       body: JSON.stringify({ query }),
     });
-    
-    if (!response.ok) throw new Error('API request failed');
-    return await response.json();
+
+    if (!response.ok) {
+      const error = await response.json()
+      throw new Error(error.error || 'API request failed')
+    }
+
+    return await response.json()
   } catch (e) {
-    console.error('API call failed:', e);
-    return { data: 'API Error - Using fallback' };
+    console.error('LLM API call failed:', e)
+    return { 
+      data: `LLM Error: ${e instanceof Error ? e.message : 'Unknown error'} - Using fallback response`
+    }
   }
 }

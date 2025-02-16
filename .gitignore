@@ -9,5 +9,3 @@ dist-ssr
 node_modules
 .idea/
 *.log
-netlify/functions/*.js
-netlify/functions/*.map
