@@ -9,6 +9,7 @@ import {createMathMicrogame} from './microgames/math'
 import {createLetterCountGame} from './microgames/count'
 import {createTypoFixMicrogame} from './microgames/typo'
 import {createScrambleMicrogame} from './microgames/scramble'
+import {createAlphabetizeMicrogame} from './microgames/alphabetize'
 
 const microgames = [
   typeWordMicrogame,
@@ -17,7 +18,8 @@ const microgames = [
   createMathMicrogame,
   createLetterCountGame,
   createTypoFixMicrogame,
-  createScrambleMicrogame
+  createScrambleMicrogame,
+  createAlphabetizeMicrogame
 ]
 
 interface GameState {
