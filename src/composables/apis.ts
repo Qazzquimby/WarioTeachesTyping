@@ -20,3 +20,22 @@ export async function getRandomWord(length: number): Promise<string> {
     return fallback
   }
 }
+
+export async function callProtectedApi(query: string): Promise<{data: string}> {
+  try {
+    const response = await fetch('/.netlify/functions/protected-api', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('apiKey') || ''}`
+      },
+      body: JSON.stringify({ query }),
+    });
+    
+    if (!response.ok) throw new Error('API request failed');
+    return await response.json();
+  } catch (e) {
+    console.error('API call failed:', e);
+    return { data: 'API Error - Using fallback' };
+  }
+}
