@@ -15,13 +15,13 @@ const showSpeedUp = ref(false)
 const speedTimeout = ref<number>()
 
 // Unified loss handler
-function handleLoss() {
+async function handleLoss() {
   console.log("lose")
   state.lives = Math.max(0, state.lives - 1)
   state.currentRound++
 
   if (state.lives > 0) {
-    startNewRound()
+    await startRound()
   } else {
     state.gameOver = true
     state.score = state.currentRound - 1
@@ -69,17 +69,17 @@ async function submitAnswer() {
 
     feedbackMessage.value = `Nice.`
     showFeedback.value = true
-    feedbackTimeout.value = window.setTimeout(() => {
+    feedbackTimeout.value = window.setTimeout(async () => {
       showFeedback.value = false
-      startRound() // This will trigger speed popups before next timer
+      await startRound() // This will trigger speed popups before next timer
     }, 1000)
   } else {
     // Handle incorrect answer
     feedbackMessage.value = `You entered: ${submission}\nCorrect answer: ${correctAnswer}`
     showFeedback.value = true
-    feedbackTimeout.value = window.setTimeout(() => {
+    feedbackTimeout.value = window.setTimeout(async () => {
       showFeedback.value = false
-      handleLoss()
+      await handleLoss()
     }, 2000)
   }
 }
@@ -91,6 +91,8 @@ const timeLeftPercent = computed(() => {
 
 // Update round starter
 async function startRound() {
+  if (timer.value) clearInterval(timer.value)
+  
   const prevSpeed = state.speed
   await startNewRound()
 
