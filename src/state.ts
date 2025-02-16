@@ -8,14 +8,16 @@ import {
 import {createMathMicrogame} from './microgames/math'
 import {createLetterCountGame} from './microgames/count'
 import {createTypoFixMicrogame} from './microgames/typo'
+import {createScrambleMicrogame} from './microgames/scramble'
 
 const microgames = [
-  // typeWordMicrogame,
-  // typeForwardsWordBackwards,
-  // typeBackwardsWordForwards,
-  // createMathMicrogame,
-  // createLetterCountGame,
-  createTypoFixMicrogame
+  typeWordMicrogame,
+  typeForwardsWordBackwards,
+  typeBackwardsWordForwards,
+  createMathMicrogame,
+  createLetterCountGame,
+  createTypoFixMicrogame,
+  createScrambleMicrogame
 ]
 
 interface GameState {
